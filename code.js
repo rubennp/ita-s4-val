@@ -40,10 +40,11 @@ document.getElementById("cercaForm").addEventListener('submit', (event) => {
  * validaMail(): valida camp d'email.
  */
 function validaMail(el) {
+    let regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     if (el.value === "") {
         document.getElementById(`error-${el.id}`).innerHTML = "El camp email és obligatori";
         return isInvalid(el);
-    } else if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(el.value))) {
+    } else if (!regex.test(el.value)) {
         document.getElementById(`error-${el.id}`).innerHTML = "Has d'introduïr un email vàlid (ex: mail@mail.com)";
         return isInvalid(el);
     } else {
@@ -55,7 +56,9 @@ function validaMail(el) {
  * validaPassword(): valida camp de contrasenya. Ara només valida que no estigui buit
  */
 function validaPassword(el) {
-    return (el.value === "") ? isInvalid(el) : isValid(el);
+    // mínim una majúscula, mínim un número, mínim 8 caràcters
+    let regex = /^(?=\w+\d)(?=\w*[A-Z])\S{8,}$/;
+    return (el.value === "" || !regex.test(el.value)) ? isInvalid(el) : isValid(el);
 }
 
 /*
@@ -113,7 +116,6 @@ function isInvalid(el) {
  * [Array].searchIn(): Busca un string dins d'un array
  */
 Array.prototype.searchIn = function (s) {
-    for (let el of this)
-        if (el === s) return true;
+    for (let el of this) if (el === s) return true;
     return false;
 };
