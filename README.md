@@ -1,2 +1,2 @@
-#IT Academy - Sprint 4: Validacions
-##Rubèn Nieto Perarnau
+# IT Academy - Sprint 4: JS Validacions
+## Rubèn Nieto Perarnau
