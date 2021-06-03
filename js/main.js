@@ -1,3 +1,15 @@
+let users = [{}], user, newUser = {};
+let action = {
+    login: false,
+    register: false,
+};
+
+window.addEventListener('load', function() {
+    if (localStorage.getItem('users') === null) localStorage.setItem('users', JSON.stringify(users));
+    else users = JSON.parse(localStorage.getItem('users'));
+    action.login = action.register = false;
+});
+
 const provincies = ['A Coruña', 'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 'Barcelona', 'Burgos', 'Cáceres',
     'Cádiz', 'Cantabria', 'Castellón', 'Ciudad Real', 'Córdoba', 'Cuenca', 'Girona', 'Granada', 'Guadalajara',
     'Guipúzcoa', 'Huelva', 'Huesca', 'Islas Baleares', 'Jaén', 'León', 'Lleida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra',
@@ -14,20 +26,33 @@ provincies.forEach(p => {
 
 // onsubmit loginForm:
 document.getElementById("loginForm").addEventListener('submit', (event) => {
+    action.register = false;
+    action.login = true;
     let valid = true;
+
     valid = validaMail(document.getElementById("loginEmail"));
-    valid = valid && validaPassword(document.getElementById("loginPassword"));
-    if (!valid) event.preventDefault();
+    valid = valid && validaPassword(document.getElementById("loginPassword")); 
+    
+    valid ? sessionStorage.setItem('loggedInUser', user.mail) : event.preventDefault();
 });
 
 // onsubmit registreForm:
 document.getElementById("registreForm").addEventListener('submit', (event) => {
+    action.login= false;
+    action.register = true;
     let valid = true;
+
     valid = validaProvincia();
     valid = valid && validaMail(document.getElementById("registreEmail"));
     valid = valid && validaPassword(document.getElementById("registrePassword"));
     valid = valid && validaPassword2(valid);
-    if (!valid) event.preventDefault();
+    
+    if (valid) {    //registra
+        users = [...users, newUser];
+        localStorage.setItem('users', JSON.stringify(users));
+    } else {
+        event.preventDefault();
+    }
 });
 
 // onsubmit cercaForm:
@@ -37,28 +62,59 @@ document.getElementById("cercaForm").addEventListener('submit', (event) => {
 });
 
 /*
+ * errorMsg(): mostra missatge error sota el camp.
+ */
+const errorMsg = (el, msg = "El camp email és obligatori") => document.getElementById(`error-${el.id}`).innerHTML = msg;
+
+/*
  * validaMail(): valida camp d'email.
  */
 function validaMail(el) {
     let regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     if (el.value === "") {
-        document.getElementById(`error-${el.id}`).innerHTML = "El camp email és obligatori";
+        errorMsg(el);
         return isInvalid(el);
     } else if (!regex.test(el.value)) {
-        document.getElementById(`error-${el.id}`).innerHTML = "Has d'introduïr un email vàlid (ex: mail@mail.com)";
+        errorMsg(el, "Has d'introduïr un email vàlid (ex: mail@mail.com)");
         return isInvalid(el);
     } else {
+        if (action.login) {
+            user = users.find(user => user.mail === el.value);
+            // busca si l'usuari existeix
+            if (user === undefined) {
+                errorMsg(el, "L'usuari no existeix!");
+                return isInvalid(el);
+            }
+        } else if (action.register) {
+            // busca si l'usuari existeix
+            if (users.find(user => user.mail === el.value) !== undefined) {
+                errorMsg(el, "L'usuari ja existeix!");
+                return isInvalid(el);
+            } else {
+                newUser.mail = el.value;
+            }
+        }
         return isValid(el);
     }
 }
 
 /*
- * validaPassword(): valida camp de contrasenya. Ara només valida que no estigui buit
+ * validaPassword(): valida camp de contrasenya: mínim una majúscula, un número i 8 caràcters.
  */
 function validaPassword(el) {
-    // mínim una majúscula, mínim un número, mínim 8 caràcters
     let regex = /^(?=\w+\d)(?=\w*[A-Z])\S{8,}$/;
-    return (el.value === "" || !regex.test(el.value)) ? isInvalid(el) : isValid(el);
+    if (el.value === "") {
+        errorMsg(el);
+        return isInvalid(el);
+    } else if (action.register && !regex.test(el.value)) {
+        errorMsg(el, "Mínim: 8 caràcters, una Majúscula i un número");
+        return isInvalid(el);
+    } else if (action.login && user.pass !== el.value) {
+        errorMsg(el, "La contrasenya no coincideix per aquest usuari");
+        return isInvalid(el);
+    } else {
+        return isValid(el);
+    }
 }
 
 /*
@@ -67,12 +123,13 @@ function validaPassword(el) {
 function validaPassword2(validPassword1) {
     let inputs = document.querySelectorAll("input[id^='registrePassword']");
     if (inputs[1].value === "") {
-        return isInvalid(inputs[1]);
-    } else if (inputs[0].value !== inputs[1].value && !validPassword1) {
+        errorMsg(input[0]);
         return isInvalid(inputs[1]);
     } else if (inputs[0].value !== inputs[1].value) {
+        errorMsg(inputs[0], "Les contrasenyes han de coincidir!");
         return isInvalid(inputs[1]);
     } else {
+        if (action.register) newUser.pass = inputs[0].value;
         return isValid(inputs[1]);
     }
 }
@@ -91,7 +148,12 @@ function validaCerca() {
  */
 function validaProvincia() {
     let inpProv = document.getElementById("registreProvincia");
-    return (inpProv.value !== "" && !provincies.searchIn(inpProv.value)) ? isInvalid(inpProv) : isValid(inpProv);
+    if (inpProv.value !== "" && !provincies.searchIn(inpProv.value)) {
+        return isInvalid(inpProv);
+    } else {
+        newUser.prov = inpProv.value;
+        return isValid(inpProv);
+    }
 }
 
 /*

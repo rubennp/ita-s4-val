@@ -22,7 +22,7 @@
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="" id="loginForm" method="post" autocomplete="off" novalidate>
+                <form action="pages/loggedin.html" id="loginForm" method="post" autocomplete="off" novalidate>
                     <div class="modal-header">
                         <h5 class="modal-title" id="loginModalLabel">Login</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tanca"></button>
@@ -69,6 +69,7 @@
                             <!-- Emplenem amb JS -->
                             <datalist id="provinciesLlista">
                             </datalist>
+                            <div id="error-registreProvincia" class="invalid-feedback">Has d'introduïr un valor de la llista!</div>
                         </div>
                         <label for="registreEmail">* Correu Electrònic</label>
                         <div class="input-group mb-3">
@@ -83,7 +84,7 @@
                             <span class="input-group-text lead"><i class="bi bi-arrow-repeat"></i></span>
                             <input placeholder="* Repeteix-la" id="registrePassword2" name="registrePassword2"
                                 class="form-control" type="password">
-                                <div id="error-loginPassword" class="invalid-feedback">Mínim: 8 caràcters, una Majúscula i un número</div>
+                            <div id="error-registrePassword" class="invalid-feedback">Mínim: 8 caràcters, una Majúscula i un número</div>
                         </div>
                         <div class="text-end fs-6 fw-lighter">* El camp és obligatori</div>
                     </div>
@@ -109,32 +110,39 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Menu -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-center d-flex flex-row">
-                        <li class="nav-item me-3 mb-1 mb-lg-0">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        <li id="bLogIn" class="nav-item me-3 mb-1 mb-lg-0">
+                            <button id="bLogOut" type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#loginModal">Login</button>
                         </li>
-                        <li class="nav-item">
+                        <li id="bRegistre" class="nav-item">
                             <button type="button" class="d-flex btn btn-outline-secondary" data-bs-toggle="modal"
                                 data-bs-target="#registreModal">Registre</button>
                         </li>
                     </ul>
-                    <form id="cercaForm" class="d-flex" method="post" autocomplete="off" novalidate>
-                        <div class="input-group">
-                            <input type="search" class="form-control" id="inputCerca" name="inputCerca"
-                                placeholder="Cerca..." required>
-                            <button id="cercaSubmit" class="btn btn-primary" type="submit"><i
-                                    class="bi bi-search"></i></button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </nav>
     </header>
     <main class="container p-5">
-
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <form id="cercaForm" method="post" autocomplete="off" novalidate>
+                    <div class="input-group">
+                        <input type="search" class="form-control" id="inputCerca" name="inputCerca"
+                            placeholder="Cerca..." required>
+                        <button id="cercaSubmit" class="btn btn-primary" type="submit"><i
+                                class="bi bi-search"></i></button>
+                        <div id="error-inputCerca" class="invalid-feedback">Mínim 3 caràcters</div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <p id="resposta" class="lead fs-2"></p>
+        </div>
     </main>
 
-    <script src="code.js"></script>
+    <script src="js/main.js"></script>
     <!-- Bootstrap JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
