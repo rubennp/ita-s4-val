@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="IT Academy. Sprint 4: Validacions">
+    <meta name="keywords" content="Javascript, ES6">
+    <meta name="author" content="Rubèn Nieto Perarnau">
+    <title>IT Academy - S4: JS Validacions</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="pages/loggedin.html" id="loginForm" method="post" autocomplete="off" novalidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tanca"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="loginEmail">* Correu Electrònic</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-at"></i></span>
+                            <input id="loginEmail" name="loginEmail" class="form-control" type="email" required>
+                            <div id="error-loginEmail" class="invalid-feedback">Has d'introduïr un email vàlid</div>
+                        </div>
+                        <label for="loginPassword">* Contrasenya</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-asterisk"></i></span>
+                            <input id="loginPassword" name="loginPassword" class="form-control" type="password" required>
+                            <div id="error-loginPassword" class="invalid-feedback">Mínim: 8 caràcters, una Majúscula i un número</div>
+                        </div>
+                        <div class="text-end fs-6 fw-lighter">* El camp és obligatori</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                            data-bs-toggle="modal" data-bs-target="#registreModal"
+                            data-bs-dismiss="modal">Registre</button>
+                        <button id="loginSubmit" type="submit" class="btn btn-success">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Registre Modal -->
+    <div class="modal fade" id="registreModal" tabindex="-1" aria-labelledby="registreModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="registreForm" method="post" autocomplete="off" novalidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registreModalLabel">Registre</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tanca"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-floating mb-5">
+                            <input class="form-control" list="provinciesLlista" id="registreProvincia"
+                                placeholder="Type to search...">
+                            <label for="registreProvincia" class="form-label">Província</label>
+                            <!-- Emplenem amb JS -->
+                            <datalist id="provinciesLlista">
+                            </datalist>
+                            <div id="error-registreProvincia" class="invalid-feedback">Has d'introduïr un valor de la llista!</div>
+                        </div>
+                        <label for="registreEmail">* Correu Electrònic</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-at"></i></span>
+                            <input id="registreEmail" name="registreEmail" class="form-control" type="email">
+                            <div id="error-registreEmail" class="invalid-feedback">Has d'introduïr un email vàlid</div>
+                        </div>
+                        <label for="registrePassword">* Contrasenya</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-asterisk"></i></span>
+                            <input id="registrePassword" name="registrePassword" class="form-control" type="password">
+                            <span class="input-group-text lead"><i class="bi bi-arrow-repeat"></i></span>
+                            <input placeholder="* Repeteix-la" id="registrePassword2" name="registrePassword2"
+                                class="form-control" type="password">
+                            <div id="error-registrePassword" class="invalid-feedback">Mínim: 8 caràcters, una Majúscula i un número</div>
+                        </div>
+                        <div class="text-end fs-6 fw-lighter">* El camp és obligatori</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                            data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                        <button id="registreSubmit" type="submit" class="btn btn-success">Registra</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Capçalera -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">IT Academy - S4</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Menu -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-center d-flex flex-row">
+                        <li id="bLogIn" class="nav-item me-3 mb-1 mb-lg-0">
+                            <button id="bLogOut" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#loginModal">Login</button>
+                        </li>
+                        <li id="bRegistre" class="nav-item">
+                            <button type="button" class="d-flex btn btn-outline-secondary" data-bs-toggle="modal"
+                                data-bs-target="#registreModal">Registre</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="container p-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <form id="cercaForm" method="post" autocomplete="off" novalidate>
+                    <div class="input-group">
+                        <input type="search" class="form-control" id="inputCerca" name="inputCerca"
+                            placeholder="Cerca..." required>
+                        <button id="cercaSubmit" class="btn btn-primary" type="submit"><i
+                                class="bi bi-search"></i></button>
+                        <div id="error-inputCerca" class="invalid-feedback">Mínim 3 caràcters</div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <p id="resposta" class="lead fs-2"></p>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <!-- Bootstrap JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
